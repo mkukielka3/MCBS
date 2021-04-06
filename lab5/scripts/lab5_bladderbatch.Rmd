@@ -1,0 +1,91 @@
+```{r global options, include = FALSE}
+knitr::opts_chunk$set(warning=FALSE, message=FALSE)
+```
+
+# Lab 5: Homework Problems
+Gosia Kukiełka
+
+### Dependencies
+Load necessery libraries.
+
+```{r load}
+library(devtools)
+library(Biobase)
+library(sva)
+library(broom)
+library(tidyverse)
+library(data.table)
+library(ggplot2)
+library(gplots)
+library(RColorBrewer)
+library(gridExtra)
+library(bladderbatch)
+```
+### Load data
+```{r}
+# sample info
+data(bladderdata)
+pheno = pData(bladderEset)
+# expression data
+edata = exprs(bladderEset)
+```
+### Prepare data
+```{r}
+#sumna <- apply(edata, 1, function(x) sum(is.na(x)))
+row.variances <- apply(edata, 1, function(x) var(x))
+edata <- edata[row.variances < 6,]
+edata.log <- log2(edata)
+#edata <- scale(edata, scale=FALSE, center=TRUE)
+```
+## Homework Problem 1:
+Create a table to show the batch effects (refer to Figure 1 in Gilad and Mizrahi-Man, 2015). 
+There are 5 batches (`pheno$batch`); how are biological variables and other variables related to study design are 
+distributed among those 5 batches? Explain what could be a problem. Prepare this into a PDF file.
+```{r}
+pdf(file = "../figures/kukielka_problem1.pdf", width=18, height=8)
+
+batch = as.factor(pheno$batch)
+g1 <- ggplot() + geom_histogram(data=pheno, aes_string("cancer"), stat="count") + 
+        facet_wrap(~batch, nrow=1) + ylab(label = "Cancer") + xlab(label=" ")
+
+g2 <- ggplot() + geom_histogram(data=pheno, aes_string("outcome"), stat="count") + 
+        facet_wrap(~batch, nrow=1) + ylab(label = "Outcome") + xlab(label=" ")
+
+text = paste("\nThe main problem here is that the variables are not equally distributed among the batches and as a result, the data that we get can be 'contaminated' ",
+              "\nwith patterns unrelated to the biological signal of our interest. The histogrammes show that different types of bladder cancers are separated quite well",
+              "\nwhen it comes to batches (mTCC is mainly in the 1t batch, mTCC-CIS in the 2nd and mTCC+CIS in the 3rd) and so we can imagine a situation in which the five",
+              "\nbatches correspond to the days in which data was gathered or different rearchers resposible for gathering it.",
+             "\nSuch variables greatly influence the results of our analysis and, if left unacccounted for, can lead to false biological conclusions.")
+
+t<- ggplot() + annotate("text", x = 4, y = 25, size=5, label = text) + theme_void()
+
+grid.arrange(g1, g2, t, nrow = 3, top = "Batch")
+dev.off()
+```
+## Homework Problem 3:
+Compute the correlation statistics among columns. 
+```{r}
+corr_matrix <- cor(edata, method = 'pearson')
+```
+Visualize sample correlations using heatmap.2
+```{r}
+png("../figures/kukielka_problem3.png",height=700,width=700)
+
+my_palette <- colorRampPalette(c("blue", "white", "darkred"))(n = 299)
+
+heatmap.2(corr_matrix,
+          main = "Bladder Cancer Data Sample Correlation", # heat map title
+          notecol="black",      # change font color of cell labels to black
+          density.info="none",  # turns off density plot inside color legend
+          trace="none",         # turns off trace lines inside the heat map
+          margins =c(12,9),     # widens margins around plot
+          col=my_palette,       # use on color palette defined earlier 
+          dendrogram="row",     # only draw a row dendrogram
+          labCol = rev(pheno$outcome),
+          labRow = pheno$cancer,
+          xlab = "Outcome",
+          ylab = "Cancer",
+          revC = TRUE)
+
+dev.off()
+```
