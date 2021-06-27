@@ -5,17 +5,18 @@ Final project for Modeling Complex Biological Systems.
 
 
 ## Data
-* pbc: dataset wih images of normal peripheral blood cell, published by Acevedo et al. (2020)
-* aml: Single-cell Morphological Dataset of Leukocytes from AML Patients and Non-malignant Controls published by Matek et al.(2019), downloaded from The Cancer Imaging Archive 
+* Dataset 1: dataset wih images of normal peripheral blood cell, published by Acevedo et al. (2020)
+* Dataset 2: Single-cell Morphological Dataset of Leukocytes from AML Patients and Non-malignant Controls published by Matek et al.(2019), downloaded from The Cancer Imaging Archive 
 	
-	
-
 	
 ## Technologies
-Project is created with:
-* Python: 3.7.10
-* Keras: 2.4.0
-* Tensorflow: 2.3.2
+This project is using:
+* Python (3.7.10)
+* Tensorflow (2.3.3)
+* Keras (2.4.0)
+* Numpy (1.19.5)
+* Splitfolders (0.4.3)
+* Matplotlib (3.4.2)
 
 
 ## References
@@ -28,3 +29,4 @@ Project is created with:
 
 ## Authors
 Małgorzata Kukiełka 
+

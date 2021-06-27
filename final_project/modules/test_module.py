@@ -97,12 +97,20 @@ def plot_CM_heatmap(y_test, y_pred, labels = None, save = True,
 
     
 def plot_hist(hist):
+    plt.subplots(1,2, figsize=(15,5))
+    plt.subplot(1,2,1)
     plt.plot(hist["accuracy"])
     plt.plot(hist["val_accuracy"])
-    plt.title("model accuracy")
     plt.ylabel("Accuracy")
     plt.xlabel("Epoch")
     plt.legend(["Train", "Validation"], loc="upper left")
+
+    plt.subplot(1,2,2)
+    plt.plot(hist["loss"])
+    plt.plot(hist["val_loss"])
+    plt.ylabel("Loss")
+    plt.xlabel("Epoch")
+    plt.legend(["Train", "Validation"], loc="upper right")
     plt.show()
 
 def CM_measures(cm, labels = None):
